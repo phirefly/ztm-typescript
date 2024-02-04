@@ -3,6 +3,7 @@ demo/**/docs/
 app/**/docs/
 exercise/**/docs/
 **/*.sqlite
+**/*.DS_Store
 
 
 # https://github.com/github/gitignore/blob/main/Node.gitignore
