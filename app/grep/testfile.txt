@@ -1,7 +1,9 @@
 __ Example todo1
 Q: What about this question?
 ** Something important1
+fuo: Mikko, what do you think of...?
 __ Example todo2
 __ Example todo3
 ** Something important2
 Q: What about another question for someone?
+fuo: David, do you know how this works?

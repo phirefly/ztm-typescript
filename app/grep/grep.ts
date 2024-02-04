@@ -20,6 +20,10 @@ const myConfig: SearchConfig = {
     indicator: "Q:",
     header: "Questions"
   },
+  followup: {
+    indicator: "fuo:",
+    header: "Follow Ups"
+  }
 }
 
 const args = process.argv.slice(2);
