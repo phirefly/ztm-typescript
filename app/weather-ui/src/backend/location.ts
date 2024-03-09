@@ -1,16 +1,26 @@
-import axios from 'axios';
+import { z } from "zod";
+import type { AxiosStatic } from 'axios';
 
 // https://geocode.maps.co/search?q={address}
 // lat, lon, display_name
 //
 
-export interface LocationInfo {
-  lat: string;
-  lon: string;
-  display_name: string;
-}
+const LocationInfoSchema = z.object({
+  lat: z.string(),
+  lon: z.string(),
+  display_name: z.string(),
+})
+
+export type LocationInfo = z.infer<typeof LocationInfoSchema>
+
+// export interface LocationInfo {
+//   lat: string;
+//   lon: string;
+//   display_name: string;
+// }
 
 export async function fetchLocationData(
+  axios: AxiosStatic, // used so we can supply a fake url for test code
   apiUrl: string,
   locationName: string,
 ): Promise<LocationInfo> {
@@ -23,12 +33,12 @@ export async function fetchLocationData(
     }
   };
 
-  const response = await axios.request<LocationInfo[]>(options);
+  const response = await axios.request(options);
   if (response.status === 200) {
-    if (response.data.length > 0 ) {
-      return response.data[0]
-    } else {
-      throw new Error(`unable to find location for ${locationName}`);
+    try {
+      return LocationInfoSchema.parse(response.data[0])
+    } catch (err) {
+      throw new Error(`unable to find location: ${err}`);
     }
   } else {
     throw new Error(`Failed to fetch location data`);
