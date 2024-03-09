@@ -66,7 +66,7 @@ export class CurrentWeather {
 
   constructor(apiResponse: CurrentWeatherApiResponse) {
     this.temperature = {
-      value: parseInt(apiResponse.temperature) * 9/5 + 32 ,
+      value: parseInt(apiResponse.temperature) * 9/5 + 32 , //formats to Fahrenheit
       unit: "F", // hard-coded
     };
 
