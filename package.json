@@ -39,6 +39,7 @@
     "node": ">=18.9.1"
   },
   "dependencies": {
-    "assert": "^2.1.0"
+    "assert": "^2.1.0",
+    "openai": "^4.28.4"
   }
 }
