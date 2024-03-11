@@ -1,3 +1,31 @@
+import path from "path";
+import formBody from "@fastify/formbody"
+import staticFiles from "@fastify/static"
+import axios from "axios";
+import dotenv from 'dotenv';
+import fastify from 'fastify';
+import nunjucks from 'nunjucks';
+
+const server = fastify({
+  logger: true
+})
+
+{
+  server.register(formBody);
+  server.register(staticFiles, {
+    root:path.join(__dirname, "../../dist");
+  });
+}
+
+const environment = process.env.NODE_ENV;
+const templates = new nunjucks.Environment(new nunjucks.FileSystemLoader('src/backend/templates'));
+
+dotenv.config();
+
+const WEATHER_API_URL = 'https://api.open-meteo.com/v1/forecast';
+const GEOCODE_API_URL = 'https://geocode.maps.co/search';
+const HTTP_CLIENT = axios;
+
 const weatherCodeToImage = (code: number): string => {
   switch (code) {
     case 0: return "/static/img/clear.svg";
