@@ -4,7 +4,10 @@ import staticFiles from "@fastify/static"
 import axios from "axios";
 import dotenv from 'dotenv';
 import fastify from 'fastify';
-import nunjucks from 'nunjucks';
+import nunjucks, {render} from 'nunjucks';
+import { z } from 'zod';
+import { fetchLocationData } from './location'
+import {fetchWeatherData} from "./weatherapi";
 
 const server = fastify({
   logger: true
@@ -59,3 +62,58 @@ const weatherCodeToImage = (code: number): string => {
     default: return "/static/img/info.svg";
   }
 };
+
+
+// Path will be... /?location=LOCATIONNAME
+const locationSchema = z.object({
+  location: z.string()
+});
+
+// Process GET requests
+server.get("/", async (request, reply) => {
+   const queryParams = request.query;
+   try {
+     const { location } = locationSchema.parse(queryParams);
+
+     // fetch location from location api
+     const locationInfo = await fetchLocationData(HTTP_CLIENT, GEOCODE_API_URL, location);
+     const weatherInfo = await fetchWeatherData(HTTP_CLIENT, WEATHER_API_URL, locationInfo.lat, locationInfo.lon)
+
+     // Render the information
+     const rendered = templates.render("weather.njk", {
+       environment,
+       location: locationInfo. display_name,
+       currentDate: new Date().toDateString(),
+       weather: {
+         ...weatherInfo,
+         conditionImg: weatherCodeToImage(weatherInfo.weatherCode),
+         condition: weatherInfo.condition(),
+         lowTemp: weatherInfo.lowTemp(),
+         highTemp: weatherInfo.highTemp()
+       }
+     });
+     await reply
+         .headers("Content-Type", "text/html; charset=utf-8")
+         .send(rendered);
+     } catch (err) {
+     console.log(err);
+
+     // Render a different page if there was an error
+     const rendered = templates.render("get_started.njk", {environment})
+     await reply
+         .headers("Content-Type", "text/html; charset=utf-8")
+         .send(rendered);
+
+   }
+});
+
+const start = async (): Promise<void> => {
+  try {
+    await server.listen({port: 8089})
+  } catch(e) {
+    server.log.error(e);
+    process.exit(1);
+  }
+};
+
+start();
