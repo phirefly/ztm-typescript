@@ -9,3 +9,18 @@
 // Useful links:
 // https://www.typescriptlang.org/docs/handbook/2/objects.html#optional-properties
 
+// Create a union type to use
+type Warranty = "standard" | "extended";
+
+function warrantyInfo(warranty: Warranty): string {
+    switch (warranty) {
+        case "standard":
+            return "Standard warranty for 90 days";
+        case "extended":
+            return "Extended warranty for 180 days";
+    }
+}
+
+console.log(warrantyInfo("standard"));
+console.log(warrantyInfo("extended"));
+
