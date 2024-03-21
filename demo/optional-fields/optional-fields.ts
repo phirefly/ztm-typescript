@@ -21,6 +21,38 @@ function warrantyInfo(warranty: Warranty): string {
     }
 }
 
+function printLineInfo(lineItem: LineItem) {
+    console.log(`name: ${lineItem.name}`);
+    console.log(`quantity: ${lineItem.quantity}`);
+
+    // There is a better way to do this... Optional Chaining Up next...
+    if (lineItem.warranty !== undefined) {
+        console.log(`Warranty: ${warrantyInfo(lineItem.warranty)}`);
+    } else {
+        console.log("Warranty: No warranty");
+    }
+}
+
+// An interface with an optional field
+interface LineItem {
+    name: string;
+    quantity: number;
+    warranty?: Warranty; //undefined if not present
+}
+
+const boxFan: LineItem = {
+    name: "box fan",
+    quantity: 1
+}
+
+const televisionSet: LineItem = {
+    name: "television set",
+    quantity: 2,
+    warranty: "standard"
+}
+
 console.log(warrantyInfo("standard"));
 console.log(warrantyInfo("extended"));
 
+printLineInfo(boxFan);
+printLineInfo(televisionSet);
